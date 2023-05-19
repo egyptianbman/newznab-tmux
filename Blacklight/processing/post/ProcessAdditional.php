@@ -1080,13 +1080,13 @@ class ProcessAdditional
             if (! empty($files)) {
                 foreach ($files as $file) {
                     // Check if the file exists.
-                    if (File::isFile($file[0])) {
-                        $rarData = @File::get($file[0]);
+                    if (File::isFile($file->getRelativePathName())) {
+                        $rarData = @File::get($file->getRelativePathName());
                         if (! empty($rarData)) {
                             $this->_processCompressedData($rarData);
                             $foundCompressedFile = true;
                         }
-                        File::delete($file[0]);
+                        File::delete($file->getRelativePathName());
                     }
                 }
             }
@@ -1850,9 +1850,9 @@ class ProcessAdditional
         }
 
         // Look for the video file.
-        if (File::isFile($fileLocation)) {
+        if (File::isFile(utf8_encode($fileLocation))) {
             try {
-                $xmlArray = $this->mediaInfo->getInfo($fileLocation, true);
+                $xmlArray = $this->mediaInfo->getInfo(utf8_encode($fileLocation), true);
 
                 // Insert it into the DB.
                 \App\Models\MediaInfo::addData($this->_release->id, $xmlArray);

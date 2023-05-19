@@ -209,7 +209,7 @@ class ProcessReleases
      * @throws \Exception
      * @throws \Throwable
      */
-    public function processIncompleteCollections($groupID): void
+    public function processIncompleteCollections(int|string $groupID): void
     {
         $startTime = now()->toImmutable();
 
@@ -462,7 +462,7 @@ class ProcessReleases
                     ]
                 );
 
-                if ($releaseID !== null) {
+                if ($releaseID !== null && is_numeric($releaseID) && $releaseID > 0) {
                     // Update collections table to say we inserted the release.
                     DB::transaction(static function () use ($collection, $releaseID) {
                         Collection::query()->where('id', $collection->id)->update(['filecheck' => self::COLLFC_INSERTED, 'releases_id' => $releaseID]);
@@ -975,7 +975,7 @@ class ProcessReleases
      *
      * @throws \Throwable
      */
-    private function collectionFileCheckStage1(int $groupID): void
+    private function collectionFileCheckStage1(int|string $groupID): void
     {
         DB::transaction(static function () use ($groupID) {
             $collectionsCheck = Collection::query()->select(['collections.id'])
@@ -1007,7 +1007,7 @@ class ProcessReleases
      *
      * @throws \Throwable
      */
-    private function collectionFileCheckStage2(int $groupID): void
+    private function collectionFileCheckStage2(int|string $groupID): void
     {
         DB::transaction(static function () use ($groupID) {
             $collectionsCheck = Collection::query()->select(['collections.id'])
@@ -1134,7 +1134,7 @@ class ProcessReleases
      *
      * @throws \Throwable
      */
-    private function collectionFileCheckStage5(int $groupId): void
+    private function collectionFileCheckStage5(int|string $groupId): void
     {
         DB::transaction(static function () use ($groupId) {
             $collectionQuery = Collection::query()->whereIn('filecheck', [self::COLLFC_TEMPCOMP, self::COLLFC_ZEROPART]);
@@ -1182,7 +1182,7 @@ class ProcessReleases
      * @throws \Exception
      * @throws \Throwable
      */
-    private function processStuckCollections(int $groupID): void
+    private function processStuckCollections(int|string $groupID): void
     {
         $lastRun = Settings::settingValue('indexer.processing.last_run_time');
 

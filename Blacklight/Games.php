@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use MarcReichel\IGDBLaravel\Exceptions\AuthenticationException;
 use MarcReichel\IGDBLaravel\Exceptions\InvalidParamsException;
 use MarcReichel\IGDBLaravel\Exceptions\MissingEndpointException;
 use MarcReichel\IGDBLaravel\Models\Company;
@@ -109,7 +110,10 @@ class Games
             ->first();
     }
 
-    public function getGamesInfoByName(string $title)
+    /**
+     * @return array|false
+     */
+    public function getGamesInfoByName(string $title): bool|array|GamesInfo
     {
         $bestMatch = false;
 
@@ -548,6 +552,8 @@ class Games
                 if ($e->getCode() === 429) {
                     $this->igdbSleep = now()->endOfMonth();
                 }
+            } catch (AuthenticationException $e) {
+                return false;
             }
         }
 

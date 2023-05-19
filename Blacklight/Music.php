@@ -162,7 +162,7 @@ class Music
                 ($start === false ? '' : ' LIMIT '.$num.' OFFSET '.$start)
             );
         $musicCache = Cache::get(md5($musicSql.$page));
-        if ($musicCache !== null) {
+        if ($musicCache !== null && count($musicCache['result']) > 0) {
             $music = $musicCache;
         } else {
             $data = DB::select($musicSql);
