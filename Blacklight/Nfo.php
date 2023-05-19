@@ -303,7 +303,7 @@ class Nfo
                 if ($nfoStats instanceof \Traversable) {
                     $outString = PHP_EOL.'Available to process';
                     foreach ($nfoStats as $row) {
-                        $outString .= ', '.$row['status'].' = '.number_format($row['count']);
+                        $outString .= ', status '.$row['status'].' has '.number_format($row['count']).' remaining.';
                     }
                     $this->colorCli->header($outString.'.');
                 }

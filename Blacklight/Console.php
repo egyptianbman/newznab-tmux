@@ -10,6 +10,7 @@ use App\Models\Settings;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use MarcReichel\IGDBLaravel\Exceptions\AuthenticationException;
 use MarcReichel\IGDBLaravel\Models\Company;
 use MarcReichel\IGDBLaravel\Models\Game;
 use MarcReichel\IGDBLaravel\Models\Platform;
