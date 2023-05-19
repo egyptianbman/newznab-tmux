@@ -783,7 +783,7 @@ class Binaries
                         DB::rollBack();
                     }
 
-                    if ($collectionID === false) {
+                    if ($collectionID === false || $collectionID === '0') {
                         if ($this->addToPartRepair) {
                             $this->headersNotInserted[] = $this->header['Number'];
                         }
@@ -926,7 +926,7 @@ class Binaries
     protected function outputHeaderInitial(): void
     {
         $this->colorCli->primary(
-            'Received '.\count($this->headersReceived).
+            'Received '.\number_format(count($this->headersReceived)).
             ' articles of '.number_format($this->last - $this->first + 1).' requested, '.
             $this->headersBlackListed.' blacklisted, '.$this->notYEnc.' not yEnc.'
         );
