@@ -124,7 +124,11 @@ function window_post($tmux_session)
 function attach($tmuxPath, $tmux_session): void
 {
     Process::run("tmux respawnp -t $tmux_session:0.0 'php ".$tmuxPath."monitor.php'");
-    Process::run("tmux select-window -t $tmux_session:0; tmux attach-session -d -t $tmux_session");
+    Process::forever()->tty()->run("tmux select-window -t $tmux_session:0; tmux attach-session -d -t $tmux_session", function ($a, $b) {
+        if ($a == 'err') {
+            echo "ERROR: $b";
+        }
+    })->output();
 }
 
 //create tmux session
