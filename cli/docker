@@ -1,0 +1,62 @@
+#!/bin/bash
+
+function _exec {
+    if [[ $IS_DOCKER == "true" ]]; then
+        ${@:2}
+    else
+        docker-compose exec $@
+    fi
+}
+
+case $1 in
+    init)
+        touch docker/.zsh_history
+        touch docker/composer-auth.json
+        touch docker/php-overrides.local.ini
+
+        echo "Done!"
+
+        echo "Add any custom php configurations to docker/php-overrides.local.ini."
+
+        echo "Copy docker-compose.override.yml.dist to docker-compose.override.yml and remove any containers you do not want to run locally."
+        ;;
+    link-logfile)
+        while true; do
+            ln -sf /dev/stdout /site/storage/logs/laravel-$(date +'%F').log
+
+            sleep 3600
+        done
+        ;;
+    tmux-start)
+        _exec tmux php artisan tmux-ui:start
+        sleep 600
+        ;;
+    tmux-restart)
+        _exec tmux php artisan tmux-ui:restart
+        ;;
+    tmux-attach)
+        _exec tmux tmux attach
+        ;;
+    tmux-stop)
+        _exec tmux php artisan tmux-ui:stop --kill
+        ;;
+    tmux-check)
+        if ! ps aux | grep -q "[/]site/misc/update/tmux/monitor.php"; then
+            # Check again 5 minutes later to be safe.
+            if ps aux | grep -q "[/]site/misc/update/tmux/monitor.php"; then
+                exit 0
+            fi
+
+            echo "Monitor pane exited, checking mysql and restarting."
+
+            while ! mariadb-admin ping --wait=10 --host=$DB_HOST --port=$DB_PORT --user=$DB_USERNAME --password=$DB_PASSWORD; do
+                echo "MySQL not up, sleeping for 60s."
+                sleep 60
+            done
+
+            if ! tmux kill-server; then
+                pkill -e -9 tmux
+            fi
+        fi
+        ;;
+esac
