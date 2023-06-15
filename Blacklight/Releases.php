@@ -331,6 +331,7 @@ class Releases extends Release
         foreach ($list as $identifier) {
             $this->deleteSingle(['g' => $identifier, 'i' => false], $nzb, $releaseImage);
         }
+        echo "\n";
     }
 
     /**
@@ -343,6 +344,15 @@ class Releases extends Release
      */
     public function deleteSingle(array $identifiers, NZB $nzb, ReleaseImage $releaseImage): void
     {
+        static $washere;
+        if (! $washere) {
+            echo 'Deleting ';
+            $washere = true;
+        } else {
+            echo ', ';
+        }
+        echo $identifiers['i'];
+
         // Delete NZB from disk.
         $nzbPath = $nzb->NZBPath($identifiers['g']);
         if (! empty($nzbPath)) {

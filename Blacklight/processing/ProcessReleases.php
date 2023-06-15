@@ -820,6 +820,7 @@ class ProcessReleases
 
         // Releases past retention.
         if ((int) Settings::settingValue('..releaseretentiondays') !== 0) {
+            $this->colorCLI->header('-> past release retention days', true);
             $releases = Release::query()->where('postdate', '<', now()->subDays((int) Settings::settingValue('..releaseretentiondays')))->select(['id', 'guid'])->get();
             foreach ($releases as $release) {
                 $this->releases->deleteSingle(['g' => $release->guid, 'i' => $release->id], $this->nzb, $this->releaseImage);
@@ -829,6 +830,8 @@ class ProcessReleases
 
         // Passworded releases.
         if ((int) Settings::settingValue('..deletepasswordedrelease') === 1) {
+            $this->colorCLI->header('-> passworded releases');
+
             $releases = Release::query()
                 ->select(['id', 'guid'])
                 ->where('passwordstatus', '=', Releases::PASSWD_RAR)
@@ -844,6 +847,8 @@ class ProcessReleases
         }
 
         if ((int) $this->crossPostTime !== 0) {
+            $this->colorCLI->header('-> cross poasted releases', true);
+
             // Cross posted releases.
             $releases = Release::query()->where('adddate', '>', now()->subHours($this->crossPostTime))->havingRaw('COUNT(name) > 1 and COUNT(fromname) > 1')->groupBy(['name', 'fromname'])->select(['id', 'guid'])->get();
             foreach ($releases as $release) {
@@ -853,6 +858,7 @@ class ProcessReleases
         }
 
         if ($this->completion > 0) {
+            $this->colorCLI->header('-> completion?', true);
             $releases = Release::query()->where('completion', '<', $this->completion)->where('completion', '>', 0)->select(['id', 'guid'])->get();
             foreach ($releases as $release) {
                 $this->releases->deleteSingle(['g' => $release->guid, 'i' => $release->id], $this->nzb, $this->releaseImage);
@@ -863,6 +869,7 @@ class ProcessReleases
         // Disabled categories.
         $disabledCategories = Category::getDisabledIDs();
         if (\count($disabledCategories) > 0) {
+            $this->colorCLI->header('-> disabled?', true);
             foreach ($disabledCategories as $disabledCategory) {
                 $releases = Release::query()->where('categories_id', (int) $disabledCategory['id'])->select(['id', 'guid'])->get();
                 foreach ($releases as $release) {
@@ -873,6 +880,7 @@ class ProcessReleases
         }
 
         // Delete smaller than category minimum sizes.
+        $this->colorCLI->header('-> smaller than category minimums', true);
         $categories = Category::query()->select(['id', 'minsizetoformrelease as minsize'])->get();
 
         foreach ($categories as $category) {
@@ -888,6 +896,7 @@ class ProcessReleases
         // Disabled music genres.
         $genrelist = $genres->getDisabledIDs();
         if (\count($genrelist) > 0) {
+            $this->colorCLI->header('-> disabled music genres', true);
             foreach ($genrelist as $genre) {
                 $musicInfoQuery = MusicInfo::query()->where('genre_id', (int) $genre['id'])->select(['id']);
                 $releases = Release::query()
@@ -905,6 +914,7 @@ class ProcessReleases
 
         // Misc other.
         if (Settings::settingValue('..miscotherretentionhours') > 0) {
+            $this->colorCLI->header('-> misc other', true);
             $releases = Release::query()->where('categories_id', Category::OTHER_MISC)->where('adddate', '<=', now()->subHours((int) Settings::settingValue('..miscotherretentionhours')))->select(['id', 'guid'])->get();
             foreach ($releases as $release) {
                 $this->releases->deleteSingle(['g' => $release->guid, 'i' => $release->id], $this->nzb, $this->releaseImage);
@@ -914,6 +924,7 @@ class ProcessReleases
 
         // Misc hashed.
         if ((int) Settings::settingValue('..mischashedretentionhours') > 0) {
+            $this->colorCLI->header('-> misc hashed', true);
             $releases = Release::query()->where('categories_id', Category::OTHER_HASHED)->where('adddate', '<=', now()->subHours((int) Settings::settingValue('..mischashedretentionhours')))->select(['id', 'guid'])->get();
             foreach ($releases as $release) {
                 $this->releases->deleteSingle(['g' => $release->guid, 'i' => $release->id], $this->nzb, $this->releaseImage);
