@@ -249,7 +249,7 @@ class Forking
             case 'update_per_group':
             case 'releases':
 
-                $this->_executeCommand($this->dnr_path.'releases  '.\count($this->work).'_"');
+                $this->_executeCommand($this->dnr_path.'releases  '.\count($this->work).'_"', true);
 
                 break;
         }
@@ -371,7 +371,7 @@ class Forking
                 $pool->add(function () use ($queue) {
                     return $this->_executeCommand($this->dnr_path.$queue.'"');
                 }, 2000000)->then(function ($output) {
-                    echo $output;
+                    $this->colorCli->debug(trim($output, "\n"), true);
                     $this->colorCli->primary('Backfilled group '.$this->safeBackfillGroup);
                 })->catch(function (\Throwable $exception) {
                     echo $exception->getMessage();
@@ -411,7 +411,7 @@ class Forking
             $pool->add(function () use ($group) {
                 return $this->_executeCommand(PHP_BINARY.' misc/update/update_binaries.php '.$group->name.' '.$group->max);
             }, 2000000)->then(function ($output) use ($group, $maxWork) {
-                echo $output;
+                $this->colorCli->debug(trim($output, "\n"), true);
                 $this->colorCli->primary('Task #'.$maxWork.' Updated group '.$group->name);
             })->catch(function (\Throwable $exception) {
                 echo $exception->getMessage();
@@ -479,7 +479,7 @@ class Forking
                     return $this->_executeCommand($this->dnr_path.$queue.'"');
                 }, 2000000)->then(function ($output) use ($hit) {
                     if (! empty($hit)) {
-                        echo $output;
+                        $this->colorCli->debug(trim($output, "\n"), true);
                         $this->colorCli->primary('Updated group '.$hit[0]);
                     }
                 })->catch(function (\Throwable $exception) {
@@ -550,7 +550,7 @@ class Forking
             $pool->add(function () use ($queue) {
                 return $this->_executeCommand(PHP_BINARY.' misc/update/tmux/bin/groupfixrelnames.php "'.$queue.'"'.' true');
             }, 2000000)->then(function ($output) use ($maxWork) {
-                echo $output;
+                $this->colorCli->debug(trim($output, "\n"), true);
                 $this->colorCli->primary('Task #'.$maxWork.' Finished fixing releases names');
             })->catch(function (\Throwable $exception) {
                 echo $exception->getMessage();
@@ -596,7 +596,7 @@ class Forking
             $pool->add(function () use ($group) {
                 return $this->_executeCommand($this->dnr_path.'releases  '.$group['id'].'"');
             }, 2000000)->then(function ($output) use ($maxWork) {
-                echo $output;
+                $this->colorCli->debug(trim($output, "\n"), true);
                 $this->colorCli->primary('Task #'.$maxWork.' Finished performing release processing');
             })->catch(function (\Throwable $exception) {
                 echo $exception->getMessage();
@@ -640,7 +640,7 @@ class Forking
                 $pool->add(function () use ($release, $type) {
                     return $this->_executeCommand(PHP_BINARY.' misc/update/postprocess.php '.$type.$release->id);
                 }, 2000000)->then(function ($output) use ($desc, $count) {
-                    echo $output;
+                    $this->colorCli->debug(trim($output, "\n"), true);
                     $this->colorCli->primary('Finished task #'.$count.' for '.$desc);
                 })->catch(function (\Throwable $exception) {
                     echo $exception->getMessage();
@@ -897,7 +897,7 @@ class Forking
             $pool->add(function () use ($group) {
                 return $this->_executeCommand($this->dnr_path.'update_per_group  '.$group->id.'"');
             }, 2000000)->then(function ($output) use ($group) {
-                echo $output;
+                $this->colorCli->debug(trim($output, "\n"), true);
                 $name = UsenetGroup::getNameByID($group->id);
                 $this->colorCli->primary('Finished updating binaries, processing releases and additional postprocessing for group:'.$name);
             })->catch(function (\Throwable $exception) {
@@ -914,17 +914,28 @@ class Forking
     //////////////////////////////////////////// Various methods ///////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    protected function _executeCommand(string $command): string
+    protected function _executeCommand(string $command, $outputLive = false): string
     {
+        $output = '';
         $process = Process::fromShellCommandline($command);
-        $process->setTimeout(1800);
-        $process->run(function ($type, $buffer) {
-            if ($type === Process::ERR) {
+        $process->setTimeout(3600);
+        $process->run(function ($type, $buffer) use ($outputLive, $output) {
+            if ($outputLive) {
                 echo $buffer;
+            }
+
+            if ($type === Process::ERR) {
+                $output .= $buffer;
             }
         });
 
-        return $process->getOutput();
+        $output .= $process->getOutput();
+
+        if ($outputLive) {
+            echo $output;
+        }
+
+        return $output;
     }
 
     /**

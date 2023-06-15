@@ -452,6 +452,7 @@ class NameFixer
 
             foreach ($releases as $release) {
                 $this->reset();
+                printf("Processing release id {$release->releases_id}..\r");
                 $this->srrNameCheck($release, $echo, $type, $nameStatus, $show);
                 $this->checked++;
                 $this->_echoRenamed($show);
@@ -993,13 +994,13 @@ class NameFixer
         $colorCLI = new ColorCLI;
         echo PHP_EOL;
 
-        $colorCLI->info('New name:     ').$colorCLI->primaryOver($data['new_name']).
-            $colorCLI->info('Old name:     ').$colorCLI->primaryOver($data['old_name']).
-            $colorCLI->info('New category: ').$colorCLI->primaryOver($data['new_category']).
-            $colorCLI->info('Old category: ').$colorCLI->primaryOver($data['old_category']).
-            $colorCLI->info('Group:        ').$colorCLI->primaryOver($data['group']).
-            $colorCLI->info('Releases ID:   ').$colorCLI->primaryOver($data['releases_id']).
-            $colorCLI->info('Method:       ').$colorCLI->primaryOver($data['method']);
+        $colorCLI->primaryOver('Old name:     ').$colorCLI->info($data['old_name']).
+            $colorCLI->primaryOver('New name:     ').$colorCLI->info($data['new_name']).
+            $colorCLI->primaryOver('Old category: ').$colorCLI->info(Category::getNameByID($data['old_category'])).
+            $colorCLI->primaryOver('New category: ').$colorCLI->info(Category::getNameByID($data['new_category'])).
+            $colorCLI->primaryOver('Group:        ').$colorCLI->info($data['group']).
+            $colorCLI->primaryOver('Releases ID:   ').$colorCLI->info($data['releases_id']).
+            $colorCLI->primaryOver('Method:       ').$colorCLI->info($data['method']);
     }
 
     /**

@@ -386,6 +386,7 @@ switch ($options[1]) {
  */
 function processReleases(ProcessReleases $releases, $groupID): void
 {
+    echo "***** Processing group $groupID\n";
     $releaseCreationLimit = (Settings::settingValue('..maxnzbsprocessed') !== '' ? (int) Settings::settingValue('..maxnzbsprocessed') : 1000);
     $releases->processIncompleteCollections($groupID);
     $releases->processCollectionSizes($groupID);
