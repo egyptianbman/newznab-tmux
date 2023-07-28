@@ -151,7 +151,7 @@ class TVDB extends TV
                     }
 
                     // Download all episodes if new show to reduce API/bandwidth usage
-                    if (! $this->countEpsByVideoID($videoId)) {
+                    if ($lookupSetting && ! $this->countEpsByVideoID($videoId)) {
                         $this->getEpisodeInfo($tvDbId, -1, -1, $videoId);
                     }
 
