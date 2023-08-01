@@ -1141,7 +1141,6 @@ class NameFixer
      */
     public function matchPreDbFiles($release, bool $echo, $nameStatus, bool $show): int
     {
-
         $matching = 0;
 
         foreach (explode('||', $release->filename) as $key => $fileName) {
@@ -1315,7 +1314,6 @@ class NameFixer
      */
     public function checkName($release, bool $echo, string $type, $nameStatus, bool $show, bool $preId = false): bool
     {
-
         // Get pre style name from releases.name
         if (preg_match_all(self::PREDB_REGEX, $release->textstring, $hits) && ! preg_match('/Source\s\:/i', $release->textstring)) {
             foreach ($hits as $hit) {
@@ -1417,7 +1415,6 @@ class NameFixer
      */
     public function tvCheck($release, bool $echo, string $type, $nameStatus, $show): void
     {
-
         $result = [];
 
         if (! $this->done && $this->relid !== (int) $release->releases_id) {
@@ -1447,7 +1444,6 @@ class NameFixer
      */
     public function movieCheck($release, bool $echo, string $type, $nameStatus, $show): void
     {
-
         $result = [];
 
         if (! $this->done && $this->relid !== (int) $release->releases_id) {
@@ -1489,7 +1485,6 @@ class NameFixer
      */
     public function gameCheck($release, bool $echo, string $type, $nameStatus, $show): void
     {
-
         $result = [];
 
         if (! $this->done && $this->relid !== (int) $release->releases_id) {
@@ -1515,7 +1510,6 @@ class NameFixer
      */
     public function appCheck($release, bool $echo, string $type, $nameStatus, $show): void
     {
-
         $result = [];
 
         if (! $this->done && $this->relid !== (int) $release->releases_id) {
@@ -1535,7 +1529,6 @@ class NameFixer
      */
     public function nfoCheckTV($release, bool $echo, string $type, $nameStatus, $show): void
     {
-
         $result = [];
 
         if (! $this->done && $this->relid !== (int) $release->releases_id) {
@@ -1555,7 +1548,6 @@ class NameFixer
      */
     public function nfoCheckMov($release, bool $echo, string $type, $nameStatus, $show): void
     {
-
         $result = [];
 
         if (! $this->done && $this->relid !== (int) $release->releases_id) {
@@ -1574,7 +1566,6 @@ class NameFixer
      */
     public function nfoCheckMus($release, bool $echo, string $type, $nameStatus, $show): void
     {
-
         $result = [];
 
         if (! $this->done && $this->relid !== (int) $release->releases_id && preg_match('/(?:\s{2,})(.+?-FM-\d{2}-\d{2})/i', $release->textstring, $result)) {
@@ -1591,7 +1582,6 @@ class NameFixer
      */
     public function nfoCheckTY($release, bool $echo, string $type, $nameStatus, $show): void
     {
-
         $result = [];
 
         if (! $this->done && $this->relid !== (int) $release->releases_id && preg_match('/(\w[\-\w`~!@#$%^&*()_+={}|"<>?\[\]\\;\',.\/ ]+\s?\((19|20)\d\d\))/i', $release->textstring, $result) && ! preg_match('/\.pdf|Audio ?Book/i', $release->textstring)) {
@@ -1764,7 +1754,6 @@ class NameFixer
      */
     public function nfoCheckG($release, bool $echo, string $type, $nameStatus, $show): void
     {
-
         $result = [];
 
         if (! $this->done && $this->relid !== (int) $release->releases_id) {
@@ -1790,7 +1779,6 @@ class NameFixer
      */
     public function nfoCheckMisc($release, bool $echo, string $type, $nameStatus, $show): void
     {
-
         if (! $this->done && $this->relid !== (int) $release->releases_id) {
             if (preg_match('/Supplier.+?IGUANA/i', $release->textstring)) {
                 $releaseName = '';
@@ -1827,7 +1815,6 @@ class NameFixer
      */
     public function fileCheck($release, bool $echo, string $type, $nameStatus, $show): bool
     {
-
         $result = [];
 
         if (! $this->done && $this->relid !== (int) $release->releases_id) {
@@ -1921,7 +1908,6 @@ class NameFixer
      */
     public function uidCheck($release, $echo, $type, $nameStatus, $show): bool
     {
-
         if (! empty($release->uid) && ! $this->done && $this->relid !== (int) $release->releases_id) {
             $result = Release::fromQuery(sprintf(
                 '
@@ -1969,7 +1955,6 @@ class NameFixer
      */
     public function mediaMovieNameCheck($release, $echo, $type, $nameStatus, $show): bool
     {
-
         $newName = '';
         if (! $this->done && $this->relid !== (int) $release->releases_id) {
             if (! empty($release->movie_name)) {
@@ -2002,7 +1987,6 @@ class NameFixer
      */
     public function xxxNameCheck($release, $echo, $type, $nameStatus, $show): bool
     {
-
         if (! $this->done && $this->relid !== (int) $release->releases_id) {
             $result = Release::fromQuery(
                 sprintf(
@@ -2050,7 +2034,6 @@ class NameFixer
      */
     public function srrNameCheck($release, $echo, $type, $nameStatus, $show): bool
     {
-
         if (! $this->done && $this->relid !== (int) $release->releases_id) {
             $result = Release::fromQuery(
                 sprintf(
@@ -2098,7 +2081,6 @@ class NameFixer
      */
     public function hashCheck($release, $echo, $type, $nameStatus, $show): bool
     {
-
         if (! $this->done && $this->relid !== (int) $release->releases_id) {
             $result = Release::fromQuery(sprintf(
                 '
@@ -2144,7 +2126,6 @@ class NameFixer
      */
     public function crcCheck($release, $echo, $type, $nameStatus, $show): bool
     {
-
         if (! $this->done && $this->relid !== (int) $release->releases_id && $release->textstring !== '') {
             $result = Release::fromQuery(
                 sprintf(
@@ -2202,7 +2183,6 @@ class NameFixer
      */
     public function preDbFileCheck($release, bool $echo, string $type, $nameStatus, bool $show): bool
     {
-
         $this->_fileName = $release->textstring;
         $this->_cleanMatchFiles();
         $this->cleanFileNames();
@@ -2238,7 +2218,6 @@ class NameFixer
      */
     public function preDbTitleCheck($release, bool $echo, string $type, $nameStatus, bool $show): bool
     {
-
         $this->_fileName = $release->textstring;
         $this->_cleanMatchFiles();
         $this->cleanFileNames();

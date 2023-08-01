@@ -301,11 +301,18 @@ class Nfo
                 $nfoStats = $qry->get();
 
                 if ($nfoStats instanceof \Traversable) {
-                    $outString = PHP_EOL.'Available to process';
+                    $outString = PHP_EOL.'Available to process:'.PHP_EOL;
                     foreach ($nfoStats as $row) {
-                        $outString .= ', status '.$row['status'].' has '.number_format($row['count']).' remaining.';
+                        $status = $row['status'];
+                        switch ($row['status']) {
+                            case self::NFO_UNPROC: $status = 'NFO_UNPROC'; break;
+                            case self::NFO_FAILED: $status = 'NFO_FAILED'; break;
+                            case self::NFO_FOUND: $status = 'NFO_FOUND'; break;
+                            case self::NFO_NONFO: $status = 'NFO_NONFO'; break;
+                        }
+                        $outString .= '- '.number_format($row['count'])." with status $status".PHP_EOL;
                     }
-                    $this->colorCli->header($outString.'.');
+                    $this->colorCli->header($outString.PHP_EOL);
                 }
             }
 
