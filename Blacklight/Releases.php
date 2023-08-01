@@ -346,12 +346,10 @@ class Releases extends Release
     {
         static $washere;
         if (! $washere) {
-            echo 'Deleting ';
+            echo "Deleting $identifiers[i]";
             $washere = true;
-        } else {
-            echo ', ';
         }
-        echo $identifiers['i'];
+        echo '.';
 
         // Delete NZB from disk.
         $nzbPath = $nzb->NZBPath($identifiers['g']);
