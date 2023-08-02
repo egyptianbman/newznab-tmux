@@ -125,6 +125,10 @@ class TraktTv extends TV
                         $seasonNo = preg_replace('/^S0*/i', '', $release['season']);
                         $episodeNo = preg_replace('/^E0*/i', '', $release['episode']);
 
+                        if (strpos($release['episode'], '/')) {
+                            $episodeNo = substr($release['episode'], 0, strpos($release['episode'], '/'));
+                        }
+
                         if ($episodeNo === 'all') {
                             // Set the video ID and leave episode 0
                             $this->setVideoIdFound($videoId, $row['id'], 0);
