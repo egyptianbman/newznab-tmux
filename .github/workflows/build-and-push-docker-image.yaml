@@ -1,0 +1,25 @@
+name: Build and push docker image
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+
+      - uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # v2.2.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker build
+        run: docker build -t ghcr.io/egyptianbman/newznab-tmux:latest .
+
+      - name: Docker push
+        run: docker push ghcr.io/egyptianbman/newznab-tmux:latest
