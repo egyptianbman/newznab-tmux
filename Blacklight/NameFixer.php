@@ -992,7 +992,6 @@ class NameFixer
         ]
     ): void {
         $colorCLI = new ColorCLI();
-        echo PHP_EOL;
 
         $colorCLI->primaryOver('Old name:     ').$colorCLI->info($data['old_name']).
             $colorCLI->primaryOver('New name:     ').$colorCLI->info($data['new_name']).
