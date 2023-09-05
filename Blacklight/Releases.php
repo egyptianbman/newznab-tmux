@@ -354,6 +354,7 @@ class Releases extends Release
         // Delete NZB from disk.
         $nzbPath = $nzb->NZBPath($identifiers['g']);
         if (! empty($nzbPath)) {
+            echo " ";
             File::delete($nzbPath);
         }
 
