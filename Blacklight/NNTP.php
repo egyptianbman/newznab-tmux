@@ -216,7 +216,7 @@ class NNTP extends \Net_NNTP_Client
                     ': '.
                     $cError;
 
-                return $this->throwError($this->colorCli->climate()->error($message));
+                return $this->throwError($this->colorCli->error($message));
             }
 
             // If we are connected, try to authenticate.
@@ -254,7 +254,7 @@ class NNTP extends \Net_NNTP_Client
                             $userName.
                             ' ('.$aError.')';
 
-                        return $this->throwError($this->colorCli->climate()->error($message));
+                        return $this->throwError($this->colorCli->error($message));
                     }
                 }
             }
@@ -278,7 +278,7 @@ class NNTP extends \Net_NNTP_Client
         // If we somehow got out of the loop, return an error.
         $message = 'Unable to connect to '.$this->_currentServer.$enc;
 
-        return $this->throwError($this->colorCli->climate()->error($message));
+        return $this->throwError($this->colorCli->error($message));
     }
 
     /**
@@ -599,7 +599,7 @@ class NNTP extends \Net_NNTP_Client
         } else {
             $message = 'Wrong Identifier type, array, int or string accepted. This type of var was passed: '.gettype($identifiers);
 
-            return $this->throwError($this->colorCli->climate()->error($message));
+            return $this->throwError($this->colorCli->error($message));
         }
 
         if ($aConnected === true) {
@@ -771,7 +771,7 @@ class NNTP extends \Net_NNTP_Client
         if (! $this->_postingAllowed) {
             $message = 'You do not have the right to post articles on server '.$this->_currentServer;
 
-            return $this->throwError($this->colorCli->climate()->error($message));
+            return $this->throwError($this->colorCli->error($message));
         }
 
         $connected = $this->_checkConnection();
@@ -783,13 +783,13 @@ class NNTP extends \Net_NNTP_Client
         if (\strlen($subject) > 510) {
             $message = 'Max length of subject is 510 chars.';
 
-            return $this->throwError($this->colorCli->climate()->error($message));
+            return $this->throwError($this->colorCli->error($message));
         }
 
         if (\strlen($from) > 510) {
             $message = 'Max length of from is 510 chars.';
 
-            return $this->throwError($this->colorCli->climate()->error($message));
+            return $this->throwError($this->colorCli->error($message));
         }
 
         // Check if the group is string or array.
@@ -1018,7 +1018,7 @@ class NNTP extends \Net_NNTP_Client
                     }
                     $message = 'Decompression of OVER headers failed.';
 
-                    return $this->throwError($this->colorCli->climate()->error($message), 1000);
+                    return $this->throwError($this->colorCli->error($message), 1000);
                 }
                 // The buffer was not empty, so we know this was not the real ending, so reset $possibleTerm.
                 $possibleTerm = false;
@@ -1036,7 +1036,7 @@ class NNTP extends \Net_NNTP_Client
                 if (empty($buffer)) {
                     $message = 'Error fetching data from usenet server while downloading OVER headers.';
 
-                    return $this->throwError($this->colorCli->climate()->error($message), 1000);
+                    return $this->throwError($this->colorCli->error($message), 1000);
                 }
             }
 
@@ -1052,7 +1052,7 @@ class NNTP extends \Net_NNTP_Client
 
         $message = 'Unspecified error while downloading OVER headers.';
 
-        return $this->throwError($this->colorCli->climate()->error($message), 1000);
+        return $this->throwError($this->colorCli->error($message), 1000);
     }
 
     /**
