@@ -11,13 +11,14 @@ use Blacklight\Releases;
 use Blacklight\utility\Utility;
 use Illuminate\Support\Facades\File;
 
-$dir = resource_path().'/movednzbs/';
+$dir = storage_path().'/nzb/movednzbs/';
 $colorCli = new ColorCLI;
 
 if (! isset($argv[1]) || ! in_array($argv[1], ['true', 'move'])) {
     $colorCli->error("This script can remove all nzbs not found in the db and all releases with no nzbs found. It can also move invalid nzbs.\n\n"
-        ."php $argv[0] true     ...: For a dry run, to see how many would be moved.\n"
-        ."php $argv[0] move     ...: Move NZBs that are possibly bad or have no release. They are moved into this folder: $dir");
+        ."php $argv[0] true       ...: For a dry run, to see how many would be moved.\n"
+        ."php $argv[0] move       ...: Move NZBs that are possibly bad or have no release. They are moved into this folder: $dir.\n"
+        ."php $argv[0] move #1 #2 ...: Same as previous, but skip first #1 nzbs, and #2 releases.");
     exit();
 }
 
@@ -39,7 +40,19 @@ $colorCli->header("Checked / {$couldbe}moved\n");
 $dirItr = new RecursiveDirectoryIterator(Settings::settingValue('..nzbpath'));
 $itr = new RecursiveIteratorIterator($dirItr, RecursiveIteratorIterator::LEAVES_ONLY);
 
+if (!isset($argv[2])) {
+    $argv[2] = 0;
+}
+
+$checked = 0;
 foreach ($itr as $filePath) {
+    if ($checked++ < $argv[2]) {
+        if ($checked % 1000 == 0) {
+            echo ' '.number_format($checked).' / '.number_format($moved)."          \r";
+        }
+        continue;
+    }
+
     $guid = stristr($filePath->getFilename(), '.nzb.gz', true);
     if (File::isFile($filePath) && $guid) {
         $nzbfile = Utility::unzipGzipFile($filePath);
@@ -52,7 +65,10 @@ foreach ($itr as $filePath) {
             $moved++;
         }
         $checked++;
-        echo "$checked / $moved\r";
+        if ($checked % 100 == 0) {
+            echo ' '.number_format($checked).' / '.number_format($moved)."          \r";
+        }
+        echo "\r";
     }
 }
 
@@ -62,8 +78,19 @@ $colorCli->header("Checked / releases deleted\n");
 
 $checked = $deleted = 0;
 
+if (!isset($argv[3])) {
+    $argv[3] = 0;
+}
+
 $res = Release::query()->select(['id', 'guid', 'nzbstatus'])->get();
 foreach ($res as $row) {
+    if ($checked++ < $argv[3]) {
+        if ($checked % 1000 == 0) {
+            echo ' '.number_format($checked).' / '.number_format($deleted)."          \r";
+        }
+        continue;
+    }
+
     $nzbpath = $nzb->getNZBPath($row->guid);
     if (! File::isFile($nzbpath)) {
         $deleted++;
@@ -72,7 +99,10 @@ foreach ($res as $row) {
         Release::where('id', $row->id)->update(['nzbstatus' => 1]);
     }
     $checked++;
-    echo "$checked / $deleted\r";
+    if ($checked % 100 == 0) {
+        echo ' '.number_format($checked).' / '.number_format($deleted)."          \r";
+    }
+    echo "\r";
 }
 $colorCli->header("\n".number_format($checked).' releases checked, '.number_format($deleted).' releases deleted.');
 $colorCli->header("Script started at [$timestart], finished at [".now()->toRfc2822String().']');
