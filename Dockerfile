@@ -41,6 +41,7 @@ RUN pacman --noconfirm -Syu \
     php-fpm \
     php-gd \
     php-intl \
+    powerline \
     powerline-fonts \
     python-neovim \
     sudo \
