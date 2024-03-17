@@ -48,7 +48,7 @@ $checked = 0;
 foreach ($itr as $filePath) {
     if ($checked++ < $argv[2]) {
         if ($checked % 1000 == 0) {
-            echo ' '.number_format($checked).' / '.number_format($moved)."          \r";
+            echo "\r  ".number_format($checked).' / '.number_format($moved).'          ';
         }
         continue;
     }
@@ -66,7 +66,7 @@ foreach ($itr as $filePath) {
         }
         $checked++;
         if ($checked % 100 == 0) {
-            echo ' '.number_format($checked).' / '.number_format($moved)."          \r";
+            echo "\r  ".number_format($checked).' / '.number_format($moved).'          ';
         }
         echo "\r";
     }
@@ -86,7 +86,7 @@ $res = Release::query()->select(['id', 'guid', 'nzbstatus'])->get();
 foreach ($res as $row) {
     if ($checked++ < $argv[3]) {
         if ($checked % 1000 == 0) {
-            echo ' '.number_format($checked).' / '.number_format($deleted)."          \r";
+            echo "\r  ".number_format($checked).' / '.number_format($deleted).'          ';
         }
         continue;
     }
@@ -100,7 +100,7 @@ foreach ($res as $row) {
     }
     $checked++;
     if ($checked % 100 == 0) {
-        echo ' '.number_format($checked).' / '.number_format($deleted)."          \r";
+        echo "\r  ".number_format($checked).' / '.number_format($deleted).'          ';
     }
     echo "\r";
 }

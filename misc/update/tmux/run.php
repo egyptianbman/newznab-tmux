@@ -91,7 +91,7 @@ function start_apps($tmux_session): void
     }
 
     if ((int) $console_bash === 1) {
-        Process::run("tmux new-window -t $tmux_session -n bash 'printf \"\033]2;Bash\033\" && bash -i'");
+        Process::run("tmux new-window -t $tmux_session -n bash 'printf \"\033]2;Bash\033\" && zsh -i'");
     }
 }
 
