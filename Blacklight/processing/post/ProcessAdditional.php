@@ -1442,7 +1442,7 @@ class ProcessAdditional
             $filteredFiles = [];
             foreach ($files as $file) {
                 if (preg_match($pattern, $file->getRelativePathname())) {
-                    $filteredFiles[] = $file->getRelativePathname();
+                    $filteredFiles[] = $file;
                 }
             }
 
