@@ -55,9 +55,17 @@ RUN pacman --noconfirm -Syu \
     which \
     yarn
 
-RUN wget http://pear.php.net/go-pear.phar -O /tmp/go-pear.phar && \
-    php /tmp/go-pear.phar && \
-    rm /tmp/go-pear.phar
+# Download and install zip extension
+RUN curl -LO https://pecl.php.net/get/zip && \
+    tar xzf zip && \
+    rm zip && \
+    cd zip-* && \
+    phpize && \
+    ./configure && \
+    make && \
+    make install && \
+    cd .. && \
+    rm -rf zip-*
 
 RUN mkdir -p /var/log/php && \
     ln -sf /dev/stderr /var/log/php/php-fpm.error.log && \
@@ -73,9 +81,6 @@ RUN sed -i  \
         -e 's/^extension=curl/;extension=curl/' \
         -e 's/^extension=zip/;extension=zip/' \
         /etc/php/php.ini
-
-RUN pecl channel-update pecl.php.net && \
-    pecl install zip
 
 COPY ./docker/nginx.conf /etc/nginx/nginx.conf
 COPY ./docker/supervisor.d /etc/supervisor.d
