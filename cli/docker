@@ -49,7 +49,7 @@ case $1 in
 
             echo "Monitor pane exited, checking mysql and restarting."
 
-            while ! mariadb-admin ping --wait=10 --host=$DB_HOST --port=$DB_PORT --user=$DB_USERNAME --password=$DB_PASSWORD; do
+            while ! mariadb-admin ping --ssl=0 --wait=10 --host=$DB_HOST --port=$DB_PORT --user=$DB_USERNAME --password=$DB_PASSWORD; do
                 echo "MySQL not up, sleeping for 60s."
                 sleep 60
             done
