@@ -55,6 +55,9 @@ RUN pacman --noconfirm -Syu \
     which \
     yarn
 
+# Needed for yay below.
+RUN sed -i '/OPTIONS/s/debug/\!debug/' /etc/makepkg.conf
+
 # Download and install zip extension
 RUN curl -LO https://pecl.php.net/get/zip && \
     tar xzf zip && \
